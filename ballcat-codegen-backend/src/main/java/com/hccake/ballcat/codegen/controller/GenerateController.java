@@ -18,12 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -77,7 +72,7 @@ public class GenerateController {
 	/**
 	 * 生成预览代码
 	 * @param preGenerateOptionDTO 预览
-	 * @return R<List<TemplateDirectory>>
+	 * @return R<List < TemplateDirectory>>
 	 */
 	@Operation(summary = "生成预览代码")
 	@PostMapping("/preview")
@@ -86,6 +81,7 @@ public class GenerateController {
 		if (CollUtil.isEmpty(fileEntries)) {
 			return R.ok();
 		}
+
 		List<GeneratePreviewFileVO> list = fileEntries.stream()
 			.map(TemplateModelConverter.INSTANCE::fileEntryToPreviewVo)
 			.collect(Collectors.toList());

@@ -1,7 +1,9 @@
 package com.hccake.ballcat.codegen.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.StrUtil;
 import com.hccake.ballcat.codegen.constant.TemplateEntryTypeEnum;
@@ -22,15 +24,14 @@ import com.hccake.ballcat.common.core.exception.BusinessException;
 import com.hccake.ballcat.common.model.result.SystemResultCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -85,7 +86,18 @@ public class GeneratorServiceImpl implements GeneratorService {
 		// 获取生成后的文件项 map
 		Map<String, FileEntry> map = getStringFileEntryMap(generateOptionDTO);
 		// 忽略大小写的排序
-		return CollUtil.sort(map.values(), Comparator.comparing(FileEntry::getFilename, String.CASE_INSENSITIVE_ORDER));
+		List<FileEntry> entryList = CollUtil.sort(map.values(), Comparator.comparing(FileEntry::getFilename, String.CASE_INSENSITIVE_ORDER));
+
+		String codePath = generateOptionDTO.getGenProperties().get("codePath");
+		if (StringUtils.isNotBlank(codePath)) {
+			codePath = codePath + "/" + DateUtil.format(new Date(), DatePattern.PURE_DATETIME_FORMATTER) + "/";
+			for (FileEntry fileEntry : entryList) {
+				if (!TemplateEntryTypeEnum.FOLDER.equals(fileEntry.getType())) {
+					FileUtil.writeBytes(fileEntry.getFileContent(), new File(codePath + fileEntry.getFilePath()));
+				}
+			}
+		}
+		return entryList;
 	}
 
 	/**

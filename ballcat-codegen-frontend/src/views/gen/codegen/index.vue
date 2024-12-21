@@ -123,11 +123,25 @@ function download() {
   const generatorConfigStore = useGeneratorConfigStore()
   generate(generatorConfigStore.dsName, generatorConfigStore.options)
     .then(response => {
-      remoteFileDownload(response, 'BallCat-CodeGen.zip')
+      remoteFileDownload(response, formatDate(new Date())+'-CodeGen.zip')
     })
     .catch(() => {
       message.error('代码生成异常')
     })
+}
+function formatDate(date: Date): string {
+  function padZero(num: number): string {
+    return num.toString().padStart(2, '0');
+  }
+
+  const year = date.getFullYear();
+  const month = padZero(date.getMonth() + 1); // Months are zero-based
+  const day = padZero(date.getDate());
+  const hours = padZero(date.getHours());
+  const minutes = padZero(date.getMinutes());
+  const seconds = padZero(date.getSeconds());
+
+  return `${year}${month}${day}${hours}${minutes}${seconds}`;
 }
 </script>
 

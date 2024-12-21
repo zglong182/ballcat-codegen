@@ -22,8 +22,8 @@
         </div>
         <div style="overflow: auto">
           <template v-if="dataSourceSelectData && dataSourceSelectData.length > 0">
-            <a-menu v-model:selectedKeys="selectedDsNames" mode="inline" :style="menuStyle">
-              <a-menu-item v-for="item in dataSourceSelectData" :key="item.value">
+            <a-menu  v-model:selectedKeys="selectedDsNames" mode="inline" :style="menuStyle"  >
+              <a-menu-item v-for="item in dataSourceSelectData" :key="item.value" >
                 {{ item.name || item.value }}
               </a-menu-item>
             </a-menu>
@@ -36,10 +36,10 @@
         </div>
       </a-col>
       <a-col :flex="20">
-        <div ref="tableColRef" style="padding: 0 24px">
+        <div ref="tableColRef" style="padding: 0 0px">
           <a-table
             row-key="tableName"
-            size="middle"
+            size="small"
             :columns="columns"
             :data-source="dataSource"
             :pagination="pagination"
